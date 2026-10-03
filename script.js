@@ -170,7 +170,7 @@ function countUp(el) {
   const start = performance.now(), dur = 1600;
   const tick = now => {
     const t = Math.min(1, (now - start) / dur);
-    el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3))) + suffix;
+    el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3))).toLocaleString("en-IN") + suffix;
     if (t < 1) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
