@@ -208,9 +208,10 @@ storySteps.forEach(s => storyIO.observe(s));
 
 /* ----- Motion extras (skipped when the user prefers less motion) ----- */
 if (!reduceMotion) {
-  // Soap bubbles in every .bubbles layer
+  // Soap bubbles in every .bubbles layer (fewer on phones)
+  const small = matchMedia("(max-width: 900px), (pointer: coarse)").matches;
   document.querySelectorAll(".bubbles").forEach(layer => {
-    const n = +layer.dataset.bubbles || 12;
+    const n = Math.ceil((+layer.dataset.bubbles || 12) * (small ? .4 : 1));
     for (let i = 0; i < n; i++) {
       const b = document.createElement("span");
       const size = 12 + Math.random() * 70;
@@ -220,6 +221,13 @@ if (!reduceMotion) {
       layer.appendChild(b);
     }
   });
+
+  // Pause animations in blocks that are off screen
+  const animIO = new IntersectionObserver(entries => {
+    entries.forEach(en => en.target.classList.toggle("is-offscreen", !en.isIntersecting));
+  });
+  document.querySelectorAll(".hero, .ribbons, .numbers, .dealer, .footer, .section--navy, #about")
+    .forEach(el => animIO.observe(el));
 
   // Hero image crossfade with product name and dots
   const slides = document.querySelectorAll("#heroSlides img");
